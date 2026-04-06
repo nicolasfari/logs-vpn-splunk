@@ -1,83 +1,65 @@
 # logs-vpn-splunk
-# Investigação de Acessos VPN Suspeitos com Splunk
+# Case – Investigação de Acessos VPN Suspeitos
 
 ## 1. Visão Geral
-Análise de logs de VPN com foco na identificação de comportamentos anômalos, incluindo acessos fora de padrão geográfico e possíveis indícios de comprometimento de conta.
+Análise de logs de autenticação VPN com foco na identificação de comportamentos anômalos e possível comprometimento de credenciais.
 
-## 2. Ferramentas
-- Splunk
-- SPL (Search Processing Language)
-
-## 3. Cenário
-Foi disponibilizado um dataset contendo logs de autenticação VPN. O objetivo foi identificar padrões suspeitos de acesso e possíveis indicadores de comprometimento.
-
-## 4. Análise Técnica
-
-### Ingestão de Dados
-- Upload do arquivo de logs no Splunk
-- Criação de índice dedicado: vpn_logs
-
-### Análise de Volume por Usuário
-
-    index=vpn_logs 
-    | stats count by user 
-    | sort -count
-
-Objetivo: identificar usuários com volume de acessos acima do padrão.
+## 2. Cenário
+Logs indicaram:
+- Alto volume de acessos
+- Origem de múltiplos IPs
+- Localizações incomuns
 
 ---
 
-### Análise de Origem de Acesso
+## 3. Análise Técnica
 
-    index=vpn_logs 
-    | stats count by src_ip, user 
-    | sort -count
-
-Objetivo: correlacionar usuários com múltiplos IPs ou IPs incomuns.
+### Padrão de Acesso
+Usuários apresentaram múltiplas autenticações em curto período de tempo.
 
 ---
 
-### Análise Geográfica
-
-    index=vpn_logs 
-    | stats count by Country 
-    | sort -count
-
-Objetivo: identificar acessos fora da região esperada.
+### Origem de IP
+Foi identificado uso de diferentes IPs para o mesmo usuário, indicando possível uso indevido.
 
 ---
 
-## 5. Principais Achados
-
-- Alto volume de autenticações concentrado em poucos usuários
-- Múltiplos IPs associados a um mesmo usuário em curto período
-- Acessos originados de países não relacionados ao ambiente corporativo
-- Desvio do comportamento esperado (baseline)
+### Localização
+Acessos foram originados de regiões não compatíveis com o contexto do ambiente.
 
 ---
 
-## 6. Análise de Risco
+## 4. Correlação (Visão do Ataque)
 
-Os padrões identificados são consistentes com:
-- Uso de credenciais comprometidas
-- Possível atividade automatizada (credential stuffing)
-- Acesso indevido via VPN corporativa
-
----
-
-## 7. Conclusão
-
-A análise indicou comportamento anômalo relevante em acessos VPN, com evidências que justificariam:
-- Investigação aprofundada dos usuários afetados
-- Reset de credenciais
-- Aplicação de MFA (caso não implementado)
+1. Uso de credenciais válidas  
+2. Acesso via múltiplos IPs  
+3. Conexões fora do padrão geográfico  
 
 ---
 
-## 8. Habilidades Demonstradas
+## 5. Análise de Risco
 
-- Análise de Logs
-- SPL
-- Detecção de Anomalias
-- Correlação de Eventos
-- Investigação de Acessos
+O comportamento é consistente com:
+- Credenciais comprometidas
+- Acesso não autorizado
+- Possível automação de login
+
+---
+
+## 6. Conclusão
+
+A análise indicou forte desvio de comportamento, sugerindo comprometimento de conta.
+
+Ações recomendadas:
+- Reset de senha
+- Implementação de MFA
+- Monitoramento contínuo
+
+---
+
+## 7. Habilidades Demonstradas
+
+- Análise de Logs  
+- Detecção de Anomalias  
+- Investigação de Acessos  
+- Correlação de Eventos  
